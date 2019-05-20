@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Insert title here</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+    >
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" th:href="@{/operations}">Acceuil</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" th:href="@{/operations}">Operations</a>
+                <a class="nav-item nav-link" th:href="@{/comptesClient}">Comptes <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" th:href="@{/clients}">Clients</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <form th:action="saveCompte" method="post">
+            <div th:object="${client}">
+                <input type="hidden" name="code" th:value="${client.getCode()}">
+                <div >
+                    <input type="radio" name="compteType"  value="compteEpargne"
+                           checked="checked"  onchange=" document.getElementById('forCompteEpargne').style.display='block';document.getElementById('forCompteCourant').style.display='none' "  />
+                    <label>Compte Epargne</label>
+                    <input type="radio" name="compteType"  value="compteCourant"
+                           onchange=" document.getElementById('forCompteEpargne').style.display='none'; document.getElementById('forCompteCourant').style.display='block' " />
+                    <label>Compte Courant</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">solde:</label>
+                <input class="form-control" type="number" name="solde" th:value="*{solde}" required/>
+                <!--<span class="error" th:errors="*{solde}"></span>-->
+            </div>
+            <div th:object="${compteEpargne}" id="forCompteEpargne">
+                <!--<input type="hidden" name="code" th:value="${compteEpargne.getCode()}">-->
+                <div class="form-group">
+                    <label class="control-label">Taux:</label>
+                    <input class="form-control" type="number" name="taux" th:value="*{taux}" th:field="*{taux}"/>
+                    <span class="error" th:errors="*{taux}"></span>
+                </div>
+                <!--<input type="hidden" name="dateCration" th:value="${}">-->
+
+            </div>
+            <div th:object="${compteCourant}" id="forCompteCourant" style="display: none">
+                <!--<input type="hidden" name="code" th:value="${compteCourant.getCode()}">-->
+                <!--<div class="form-group">-->
+                <!--<label class="control-label">solde:</label>-->
+                <!--<input class="form-control" type="number" name="solde" th:value="*{soldeC}"/>-->
+                <!--<span class="error" th:errors="*{solde}"></span>-->
+                <!--</div>-->
+                <div class="form-group">
+                    <label class="control-label">Decouvert:</label>
+                    <input class="form-control" type="number" name="decouvert" th:value="*{decouvert}" th:field="*{decouvert}"/>
+                    <span class="error" th:errors="*{decouvert}"></span>
+                </div>
+
+            </div>
+            <!--<input type="hidden" name="code" th:value="${client.getCode()}">-->
+            <div>
+
+            </div>
+            <div>
+                <input class="btn btn-primary" type="submit" value="Save"/>
+            </div>
+        </form>
+</body>
+</html>

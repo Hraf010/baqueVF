@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Controle 1</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+    >
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" th:href="@{/operations}">Accueil</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" th:href="@{/operations}">Operations</a>
+                    <a class="nav-item nav-link" th:href="@{/comptes}">Comptes <span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link" th:href="@{/clients}">Clients</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+    <div class="container spacer">
+        <form action="comptesClient" method="GET">
+            <label>Code du Client:</label>
+            <input type="text" name="code" th:value="${code}"/>
+            <input type="submit" value="Chercher"/>
+        </form>
+    </div>
+    <div class="container">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th>ID</th><th>Date de Creation</th><th>SOLDE</th><th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c:${comptes.content}">
+                <td th:text="${c.getClient().getNom()}"></td>
+                <td th:text="${c.dateCreation}"></td>
+                <td th:text="${c.solde}"></td>
+                <td>
+                    <form action="/deleteForm" method="post"><input type="hidden" name="code" th:value="${c.getCode()}"><button type="submit" class="btn-danger">Delete</button></form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <ul class="pagination">
+            <li class="page-item" th:each="p:${pages}" th:class="${pageCourant==p}? 'active': ''">
+                <a class="page-link" th:href="@{comptes(page=${p})}" th:text="${p}"></a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Controle 1</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+    >
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" th:href="@{/operations}">Acceuil</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" th:href="@{/operations}">Operations</a>
+                    <a class="nav-item nav-link" th:href="@{/comptesClient}">Comptes <span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link" th:href="@{/clients}">Clients</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+    <div class="container spacer" style="margin-top: 25px;">
+        <form action="comptesClient?page=0" method="GET" style="display: inline;">
+            <label>Titre:</label>
+            <input type="text" name="code" th:value="${code}"/>
+            <input type="submit" value="Chercher"/>
+        </form>
+        <button class="btn btn-primary" style="margin-left: 500px;"><a style="color: white; text-decoration: none;" th:href="@{'/compteForm?code='+${client.code}}">Ajouter Compte</a></button>
+    </div>
+    List des Comptes de <span th:text="${client.nom}"></span>
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th><th>Date de Creation</th><th>SOLDE</th><th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c:${comptesPage.content}">
+                <td th:text="${c.code}"></td>
+                <td th:text="${c.dateCreation}"></td>
+                <td th:text="${c.solde}"></td>
+                <td>
+                    <form action="/deleteForm" method="post"><input type="hidden" name="code" th:value="${c.getCode()}"><button type="submit" class="btn-danger">Delete</button></form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <ul class="pagination">
+            <li class="page-item" th:each="p:${pages}" th:class="${pageCourant==p}? 'active': ''">
+                <a class="page-link" th:href="@{comptesClient(page=${p},code=${code})}" th:text="${p}"></a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>

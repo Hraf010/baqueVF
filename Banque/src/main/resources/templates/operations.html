@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head>
+    <meta charset="utf-8" />
+    <title>Ma banque</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+    >
+
+
+
+    <link rel="stylesheet" type="text/css" href="../static/css/myStyle.css"
+          th:href="@{/css/myStyle.css}"/>
+
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" th:href="@{/operations}">Acceuil</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" th:href="@{/operations}">Operations <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" th:href="@{/comptes}">Comptes</a>
+                <a class="nav-item nav-link" th:href="@{/clients}">Clients</a>
+            </div>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+           <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section>
+    <div class="col-md-6"> <!--  càd , la moitier -->
+
+        <div class="card">
+            <div class="card-header"> Consultation d'un compte</div>
+            <div class="card-body">
+
+                <form th:action="@{/consultercompte}" methode="get">
+                    <div>
+                        <label> Code Compte: </label>
+                        <input type="text" name="codeCompte" th:value="${code}"/>
+                        <button type="submit" class="btn btn-primary">Ok</button>
+                    </div>
+                </form>
+                <div th:if="${exception}"  th:text="${exception.message}" class="text-danger"></div>
+            </div>
+        </div>
+
+        <div class="card"  th:if="${compte}">
+            <div class="card-header"> Informations sur le compte</div>
+            <div class="card-body">
+                <div>
+                    <label> Client: </label>
+                    <label th:text="${compte.getClient().nom}"></label>
+                </div>
+
+
+                <div>
+                    <label> Code: </label>
+                    <label th:text="${compte.getCode()}"></label>
+                </div>
+                <div>
+                    <label> Solde : </label>
+                    <label th:text="${compte.getSolde()}"></label>
+                </div>
+                <div>
+                    <label> Date Création : </label>
+                    <label th:text="${compte.getDateCreation()}"></label>
+                </div>
+                <div>
+                    <label> Type de compte: </label>
+                    <label th:text="${compte.getHibernateLazyInitializer().getImplementation().getClass().getSimpleName()}"></label>
+                </div>
+                <!--<div  th:if="${compte.getHibernateLazyInitializer().getImplementation().getClass().getSimpleName().equals('CompteCourant')}">-->
+                    <!--<label>Découvert: </label>-->
+                    <!--<label th:text="${compte.getDecouvert()}"></label>-->
+                <!--</div>-->
+                <!--<div th:if="${compte.getHibernateLazyInitializer().getImplementation().getClass().getSimpleName().equals('CompteEpargne')}">-->
+                    <!--<label>Taux: </label>-->
+                    <!--<label th:text="${compte.getTaux()}"></label>-->
+                <!--</div>-->
+            </div>
+        </div>
+
+
+    </div>
+    <div class="col-md-6" sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="card"  th:if="${compte}">
+            <div class="card-header"> Opérations sur le compte</div>
+            <div class="card-body">
+                <form th:action="@{/saveOperation}" method="post">
+
+                    <div>
+                        <label> Compte  : </label>
+                        <input type="hidden" name="codeCompte" th:value="${compte.getCode()}"  />
+                        <label th:text="${compte.getCode()}" ></label>
+                    </div>
+
+                    <div>
+                        <input type="radio" name="typeOperation" value="VERS"
+                               checked="checked"  onchange=" document.getElementById('forVirement').style.display='none' " />
+                        <label>Versement</label>
+                        <input type="radio" name="typeOperation" value="RETR"
+                               onchange=" document.getElementById('forVirement').style.display='none' " />
+                        <label>Retrait</label>
+                        <input type="radio" name="typeOperation" value="VIR"
+                               onchange=" document.getElementById('forVirement').style.display='block' " />
+                        <label>Virement</label>
+                    </div>
+
+                    <div id="forVirement"  style="display:none">
+                        <label> Vers : </label>
+                        <input type="text"  name="codeCompte2"  />
+                    </div>
+
+                    <div>
+                        <label> Montant : </label>
+                        <input type="text"  name="montant"  />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"> Save </button>
+                    <!-- <div class="text-danger" th:text="${#httpServletRequest.getParameter('error')}" ></div> -->
+
+                </form>
+            </div>
+        </div>
+        <div class="card"  th:if="${compte}">
+            <div class="card-header"> Liste des opérations</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <th>Numéro</th><th>Type</th><th>Date</th><th>Montant</th>
+                    </thead>
+                    <tr th:each="o:${operations.content}">
+                        <td th:text="${o.getNum()}"></td>
+                        <td th:text="${o.getClass().getSimpleName()}"></td>
+                        <td th:text="${o.getDate()}"></td>
+                        <td th:text="${o.getMontant()}"></td>
+                    </tr>
+                </table>
+                <div class="container">
+                    <ul class="pagination">
+                        <li class="page-item" th:each="p:${pages}" th:class="${pageCourant==p}? 'active': ''">
+                            <a class="page-link" th:href="@{/consultercompte(codeCompte=${compte.getCode()},page=${p})}" th:text="${p}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+</section> <!-- la partie section est variable -->
+
+
+
+<footer>
+    <div class="navbar-fixed-bottom">
+        <small> @ L'adresse de votre banque</small>
+    </div>
+</footer>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <title>Ma banque</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"
+    >
+
+
+
+    <link rel="stylesheet" type="text/css" href="../static/css/myStyle.css"
+          th:href="@{/css/myStyle.css}"/>
+
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" th:href="@{/operations}">Acceuil</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" th:href="@{/operations}">Operations <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" th:href="@{/comptes}">Comptes</a>
+                <a class="nav-item nav-link" th:href="@{/clients}">Clients</a>
+            </div>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section>
+    <div class="col-md-6 col-md-offset-3"> <!--  càd , la moitier -->
+
+        <div class="card">
+            <div class="card-header"> Consultation d'un compte</div>
+            <div class="card-body">
+                Vous n'avez pas le droit d'acceder à cette page
+            </div>
+        </div>
+
+    </div>
+</section>
+</body>
+</html>
